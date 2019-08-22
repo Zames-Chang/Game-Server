@@ -28,10 +28,9 @@ class AuthController extends Controller
     {
         $rules = [
             'uid' => 'required|unique:users',
-            'email' => 'required|email',
+            'email' => 'required|string',
         ];
         $this->validate($request, $rules);
-
         $user = User::create($request->only(['uid', 'email']));
         $user->password = Hash::make($request->email);
         $user->save();
