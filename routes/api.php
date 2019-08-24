@@ -11,8 +11,10 @@
 |
 */
 
-$router->post('register', 'AuthController@register');
-$router->post('login', 'AuthController@login');
+$router->get('/intro', 'InfoController@showGameInfo');
+
+$router->post('/register', 'AuthController@register');
+$router->post('/login', 'AuthController@login');
 
 $router->group(['middleware'=>'auth:api'], function ($router) {
     $router->get('refreshToken', 'AuthController@refreshToken');
@@ -23,4 +25,13 @@ $router->group(['middleware'=>'auth:api'], function ($router) {
     });
 
     $router->get('/me', 'AuthController@me');
+    $router->get('/getTask/{missionUid}', 'TaskController@getTask');
+    $router->get('/getReward', 'RewardController@getReward');
+    $router->post('/verify/{vType}', 'VerifyController@verify');
 });
+
+// for convenient, create following endpoint to add data, need ADMIN_KEY
+$router->post('/mission', 'MissionController@store');
+$router->post('/task', 'TaskController@store');
+$router->post('/reward', 'RewardController@store');
+$router->post('/keypool', 'KeyPoolController@store');

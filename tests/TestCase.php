@@ -1,5 +1,8 @@
 <?php
 
+use App\User;
+use Tymon\JWTAuth\Facades\JWTAuth;
+
 abstract class TestCase extends Laravel\Lumen\Testing\TestCase
 {
     /**
@@ -10,5 +13,17 @@ abstract class TestCase extends Laravel\Lumen\Testing\TestCase
     public function createApplication()
     {
         return require __DIR__.'/../bootstrap/app.php';
+    }
+
+    protected function apiAs($method, $uri, array $data = [], array $headers = [], $user = null)
+    {
+        $user = $user ? $user : factory(User::class)->create();
+
+        $headers = array_merge(
+            ['Authorization' => 'Bearer ' . JWTAuth::fromUser($user)],
+            $headers
+        );
+
+        return $this->json($method, $uri, $data, $headers);
     }
 }
