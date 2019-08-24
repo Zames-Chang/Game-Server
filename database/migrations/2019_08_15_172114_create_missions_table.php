@@ -16,11 +16,11 @@ class CreateMissionsTable extends Migration
         Schema::create('missions', function (Blueprint $table) {
             $table->increments('id');
             $table->uuid('uid')->index();
-            $table->string('name');
-            $table->string('name_e');
+            $table->string('name', 100);
+            $table->string('name_e', 100);
             $table->text('description')->nullable();
             $table->text('description_e')->nullable();
-            $table->string('image')->nullable();
+            $table->string('image', 200)->nullable();
             $table->boolean('open')->default(true);
             $table->timestamps();
         });

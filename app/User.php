@@ -84,25 +84,32 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 
     public function getCompletedTaskAttribute()
     {
-        return collect($this->achievement[self::COMPLETED_TASK])
-            ->map(function ($item) {
-                $task = Task::findOrfail($item['task_id']);
-                $mission = Mission::findOrFail($item['mission_id']);
-                $task->mission_uid = $mission->uid;
+        $completed_task = collect($this->achievement[self::COMPLETED_TASK]);
+
+        $tasks = Task::findOrFail($completed_task->pluck('task_id'));
+        $missions = Mission::findOrFail($completed_task->pluck('mission_id'));
+
+        return $completed_task
+            ->map(function ($item) use ($tasks, $missions) {
+                $task = $tasks->where('id', $item['task_id'])->first();
+                $task->mission_uid = $missions->where('id', $item['mission_id'])->first()->uid;
 
                 return $task;
-            })->all();
+            });
     }
 
     public function getWonRewardAttribute()
     {
-        return collect($this->achievement[self::WON_REWARD])
-            ->map(function ($item) {
-                $reward = Reward::findOrfail($item['reward_id']);
+        $won_reward = collect($this->achievement[self::WON_REWARD]);
+        $rewards = Reward::findOrFail($won_reward->pluck('reward_id'));
+
+        return $won_reward
+            ->map(function ($item) use ($rewards) {
+                $reward = $rewards->where('id', $item['reward_id'])->first();
                 $reward->redeemed = $item['redeemed'];
 
                 return $reward;
-            })->all();
+            });
     }
 
     public function getWonPointAttribute()

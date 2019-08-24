@@ -15,9 +15,9 @@ class CreateKeyPoolTable extends Migration
     {
         Schema::create('key_pool', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('key');
+            $table->string('key', 100);
             $table->string('type', 10);
-            $table->string('note')->default('');
+            $table->text('note', 200)->nullable();
             $table->timestamps();
         });
     }

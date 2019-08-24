@@ -20,19 +20,4 @@ class Scoreboard extends Model
         'pass',
         'point',
     ];
-
-    // public function user()
-    // {
-    //     return $this->belongsTo('App\User');
-    // }
-
-    // public function mission()
-    // {
-    //     return $this->belongsTo('App\Mission');
-    // }
-
-    // public function task()
-    // {
-    //     return $this->belongsTo('App\Task');
-    // }
 }

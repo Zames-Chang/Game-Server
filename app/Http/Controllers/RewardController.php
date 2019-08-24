@@ -30,9 +30,6 @@ class RewardController extends Controller
         $user = $this->guard()->user();
         $achievement = $user->achievement;
         $wonReward = collect($achievement[User::WON_REWARD]);
-        $wonRewardIds = $wonReward->map(function ($item) {
-            return $item['reward_id'];
-        })->all();
 
         $reward = Reward::whereNotIn('id', [2000])
             ->inRandomOrder()

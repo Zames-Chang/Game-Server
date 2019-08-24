@@ -23,7 +23,7 @@ class InfoController extends Controller
      */
     public function showGameInfo()
     {
-        $data = SELF::GAME_INFO;
+        $data = self::GAME_INFO;
 
         $mission_list = Mission::all();
         $data['mission_list'] = $mission_list;
