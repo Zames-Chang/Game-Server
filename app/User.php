@@ -39,18 +39,23 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     protected $hidden = [
         'id',
         'password',
+        'email',
         'achievement',
+        'favorite',
         'created_at',
         'updated_at',
     ];
 
     protected $appends = [
-        self::COMPLETED_TASK,
-        self::WON_REWARD,
+        'mission_list',
+        'reward_list',
         self::WON_POINT,
     ];
 
-    protected $casts = ['achievement' => 'array'];
+    protected $casts = [
+        'achievement' => 'array',
+        'favorite' => 'array',
+    ];
 
     public static function boot()
     {
@@ -82,40 +87,47 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         return [];
     }
 
-    public function getCompletedTaskAttribute()
+    public function getMissionListAttribute()
     {
+        $missions = Mission::all();
         $completed_task = collect($this->achievement[self::COMPLETED_TASK]);
-
         $tasks = Task::findOrFail($completed_task->pluck('task_id'));
-        $missions = Mission::findOrFail($completed_task->pluck('mission_id'));
 
-        return $completed_task
-            ->map(function ($item) use ($tasks, $missions) {
-                $task = $tasks->where('id', $item['task_id'])->first();
-                $task->mission_uid = $missions->where('id', $item['mission_id'])->first()->uid;
+        return $missions->map(function ($item) use ($tasks) {
+            $task = $tasks->find($item->id);
+            $item->pass = (is_null($task)) ? 0 : 1;
+            $item->task = $task;
 
-                return $task;
-            });
+            return $item;
+        });
     }
 
-    public function getWonRewardAttribute()
+    public function getRewardListAttribute()
     {
-        $won_reward = collect($this->achievement[self::WON_REWARD]);
-        $rewards = Reward::findOrFail($won_reward->pluck('reward_id'));
+        $rewards = Reward::all();
+        $won_reward = collect($this->achievement[self::WON_REWARD])
+            ->mapWithKeys(function ($item) {
+                return [$item['reward_id'] => $item['redeemed']];
+            })->all();
 
-        return $won_reward
-            ->map(function ($item) use ($rewards) {
-                $reward = $rewards->where('id', $item['reward_id'])->first();
-                $reward->redeemed = $item['redeemed'];
+        return $rewards->map(function ($item) use ($won_reward) {
+            if (array_key_exists($item->id, $won_reward)) {
+                $item->redeemed = (int) $won_reward[$item->id];
+                $item->has_won = 1;
+            } else {
+                $item->redeemed = 0;
+                $item->has_won = 0;
+            }
 
-                return $reward;
-            });
+            return $item;
+        });
     }
 
     public function getWonPointAttribute()
     {
         return $this->achievement[self::WON_POINT];
     }
+
     /**
      * get scores for user
      */

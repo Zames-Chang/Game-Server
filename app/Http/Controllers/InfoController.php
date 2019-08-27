@@ -11,11 +11,11 @@ class InfoController extends Controller
     use ApiTrait;
 
     const GAME_INFO = [
-        'landing_page_title' => '歡迎加入',
-        'landing_page_title_en' => 'Welcome',
-        'landing_page_text' => '歡迎來到Mopcon闖關大進擊，透過達成各關卡任務，將有神秘大獎等著你!',
-        'landing_page_text_en' => 'Welcome to MOPCON Game Field.',
-        'welcome_img' => 'https://lorempixel.com/640/480/technics/Faker/?66666',
+        'image' => 'https://lorempixel.com/640/480/technics/Faker/?66666',
+        'title' => '歡迎加入',
+        'title_e' => 'Welcome',
+        'description' => '歡迎來到Mopcon闖關大進擊，透過達成各關卡任務，將有神秘大獎等著你!',
+        'description_e' => 'Welcome to MOPCON Game Field.',
     ];
 
     /**
@@ -23,14 +23,6 @@ class InfoController extends Controller
      */
     public function showGameInfo()
     {
-        $data = self::GAME_INFO;
-
-        $mission_list = Mission::all();
-        $data['mission_list'] = $mission_list;
-
-        $reward_list = Reward::all();
-        $data['reward_list'] = $reward_list;
-
-        return $this->returnSuccess('Success.', $data);
+        return $this->returnSuccess('Success.', self::GAME_INFO);
     }
 }

@@ -7,20 +7,13 @@ use App\Task;
 use App\Reward;
 use App\KeyPool;
 use App\Http\Traits\ApiTrait;
+use App\Http\Traits\AuthTrait;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class VerifyController extends Controller
 {
     use ApiTrait;
-
-    /**
-     * set guard to replace auth()
-     */
-    public function guard()
-    {
-        return Auth::guard('api');
-    }
+    use AuthTrait;
 
     /**
      * @param Request $request
@@ -47,18 +40,18 @@ class VerifyController extends Controller
                 $task = Task::where('uid', $uid)->firstOrFail();
                 $task_id = $task->id;
                 $taskCollection = collect($achievement[User::COMPLETED_TASK]);
-                if($taskCollection->where(['task_id', $task_id])->isEmpty()){
+                if ($taskCollection->where(['task_id', $task_id])->isEmpty()) {
                     $score = $user
                         ->scores()
                         ->get()
                         ->firstWhere('task_id', $task->id);
                     if ($score) {
-                        if($score->pass == 0){
+                        if ($score->pass == 0) {
                             $score->pass = 1;
                             $score->save();
 
                             array_push(
-                                $achievement[User::COMPLETED_TASK], 
+                                $achievement[User::COMPLETED_TASK],
                                 [
                                     'mission_id' => $score->mission_id,
                                     'task_id' => $score->task_id,
@@ -75,7 +68,7 @@ class VerifyController extends Controller
 
             case KeyPool::TYPE_REWARD:
                 $reward = Reward::where('uid', $uid)->firstOrFail();
-                if(! $reward->redeemable){
+                if (! $reward->redeemable) {
                     return $this->return400Response();
                 }
 
@@ -110,7 +103,7 @@ class VerifyController extends Controller
             $user->save();
         }
 
-        return $this->returnSuccess('Success.', $user);
+        return $this->returnSuccess('Success.');
     }
 
 

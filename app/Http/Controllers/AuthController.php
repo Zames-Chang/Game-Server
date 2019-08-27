@@ -5,20 +5,13 @@ namespace App\Http\Controllers;
 use App\User;
 use App\Http\Traits\ApiTrait;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Traits\AuthTrait;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
     use ApiTrait;
-
-    /**
-     * set guard to replace auth()
-     */
-    public function guard()
-    {
-        return Auth::guard('api');
-    }
+    use AuthTrait;
 
     /**
      * @param Request $request
@@ -92,7 +85,6 @@ class AuthController extends Controller
         return $this->returnSuccess('Success.', [
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => $this->guard()->factory()->getTTL() * 60
         ]);
     }
 }

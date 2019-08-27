@@ -53,6 +53,8 @@ class Handler extends ExceptionHandler
             || $exception instanceof ModelNotFoundException
         ) {
             return $this->return404Response();
+        } elseif ($exception instanceof ValidationException) {
+            return $this->return400Response();
         }
 
         return parent::render($request, $exception);
