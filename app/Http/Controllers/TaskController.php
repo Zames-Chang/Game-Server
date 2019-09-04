@@ -6,22 +6,13 @@ use App\Mission;
 use App\Task;
 use App\Scoreboard;
 use App\Http\Traits\ApiTrait;
-use App\Http\Traits\AdminTrait;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Traits\AuthTrait;
 use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
     use ApiTrait;
-    use AdminTrait;
-
-    /**
-     * set guard to replace auth()
-     */
-    public function guard()
-    {
-        return Auth::guard('api');
-    }
+    use AuthTrait;
 
     /**
      * @param string $missionUid
@@ -69,17 +60,12 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-        if (!$this->checkAdmin($request)) {
-            return $this->return401Response();
-        }
-
         $task = Task::create($request->only([
             'name',
             'name_e',
             'description',
             'description_e',
             'image',
-            'point',
         ]));
 
         return $this->returnSuccess('Store success.', $task);

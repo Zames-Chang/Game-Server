@@ -21,7 +21,6 @@ class Task extends Model
         'description',
         'description_e',
         'image',
-        'point',
     ];
 
     protected $hidden = [

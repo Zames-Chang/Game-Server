@@ -23,7 +23,7 @@ class MissionsTableSeeder extends Seeder
                 'description' => $faker->realtext(20),
                 'description_e' => $en_faker->text,
                 'image' => $faker->imageUrl('640', '480', 'technics', true, 'Faker'),
-                'open' => $faker->boolean,
+                'open' => 1,
             ];
 
             Mission::create($data);

@@ -16,7 +16,7 @@ class RewardsTableSeeder extends Seeder
         $en_faker = Faker\Factory::create('en_US');
         $item_count = 0;
 
-        while ($item_count < 20) {
+        while ($item_count < 2) {
             $data = [
                 'name' => $faker->text(20),
                 'name_e' => $en_faker->text(20),

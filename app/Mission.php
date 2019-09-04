@@ -22,6 +22,7 @@ class Mission extends Model
         'description_e',
         'image',
         'open',
+        'point',
     ];
 
     protected $hidden = [

@@ -5,22 +5,13 @@ namespace App\Http\Controllers;
 use App\User;
 use App\Reward;
 use App\Http\Traits\ApiTrait;
-use App\Http\Traits\AdminTrait;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Traits\AuthTrait;
 use Illuminate\Http\Request;
 
 class RewardController extends Controller
 {
     use ApiTrait;
-    use AdminTrait;
-
-    /**
-     * set guard to replace auth()
-     */
-    public function guard()
-    {
-        return Auth::guard('api');
-    }
+    use AuthTrait;
 
     /**
      * @return \Illuminate\Http\JsonResponse
@@ -60,10 +51,6 @@ class RewardController extends Controller
      */
     public function store(Request $request)
     {
-        if (!$this->checkAdmin($request)) {
-            return $this->return401Response();
-        }
-
         $reward = Reward::create($request->only([
             'name',
             'name_e',

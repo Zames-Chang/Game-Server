@@ -4,13 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Mission;
 use App\Http\Traits\ApiTrait;
-use App\Http\Traits\AdminTrait;
 use Illuminate\Http\Request;
 
 class MissionController extends Controller
 {
     use ApiTrait;
-    use AdminTrait;
 
     /**
      * Store a newly created resource in storage.
@@ -20,10 +18,6 @@ class MissionController extends Controller
      */
     public function store(Request $request)
     {
-        if (!$this->checkAdmin($request)) {
-            return $this->return401Response();
-        }
-
         $mission = Mission::create($request->only([
             'name',
             'name_e',
@@ -31,6 +25,7 @@ class MissionController extends Controller
             'description_e',
             'image',
             'open',
+            'point',
         ]));
 
         return $this->returnSuccess('Store success.', $mission);
