@@ -1,0 +1,18 @@
+language: php
+php:
+  - '7.2'
+
+env:
+  - DB_CONNECTION=sqlite
+
+services:
+  - docker
+
+jobs:
+  include:
+    - stage: test
+      script:
+        - docker run --rm -v ${TRAVIS_BUILD_DIR}:/app -w /app composer:1.6.5 composer install --ignore-platform-reqs
+        - touch database/database.sqlite
+        - php artisan migrate --force
+        - ./vendor/bin/phpunit
