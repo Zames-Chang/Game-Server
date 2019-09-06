@@ -24,6 +24,8 @@ DB_PASSWORD=pwd
 ```
 
 + 產生 JWT secret key
+
+**ps. 此指令會將原本的 secret 覆蓋掉**
 ```
 php artisan jwt:secret
 ```
