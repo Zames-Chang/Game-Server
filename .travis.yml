@@ -1,10 +1,6 @@
 .build: &build_image
   script:
-    - echo "$DOCKER_PASSWORD" | docker login -u="$DOCKER_USERNAME" --password-stdin
-    - docker run --rm -v ${TRAVIS_BUILD_DIR}:/app -w /app composer:1.6.5 composer install --ignore-platform-reqs --no-dev
-    - docker build --pull --no-cache -t "hashman/game-server:$TRAVIS_BRANCH" .
-    - docker tag "hashman/game-server:$TRAVIS_BRANCH" "hashman/game-server:$TRAVIS_BRANCH"
-    - docker push "hashman/game-server:$TRAVIS_BRANCH"
+    - if [ $TRAVIS_PULL_REQUEST == "false" ]; then ./.travis/docker_build.sh; fi
 
 language: php
 php:
@@ -24,8 +20,8 @@ jobs:
         - touch database/database.sqlite
         - php artisan migrate --force
     - stage: build develop
-      if: branch = develop && "$TRAVIS_PULL_REQUEST" = "false"
+      if: branch = develop
       <<: *build_image
     - stage: build master
-      if: branch = master && "$TRAVIS_PULL_REQUEST" = "false"
+      if: branch = master
       <<: *build_image
