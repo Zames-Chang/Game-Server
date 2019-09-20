@@ -12,9 +12,12 @@
 */
 
 $router->get('/intro', 'InfoController@showGameInfo');
-
 $router->post('/register', 'AuthController@register');
 $router->post('/login', 'AuthController@login');
+
+$router->group(['middleware' => 'basicAuth'], function ($router) {
+    $router->get('/qrcode', 'QrCodeController@showImage');
+});
 
 $router->group(['middleware' => 'auth:api'], function ($router) {
     $router->get('refreshToken', 'AuthController@refreshToken');
