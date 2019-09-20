@@ -34,7 +34,6 @@ class VerifyController extends Controller
         $user = $this->guard()->user();
         $achievement = $user->achievement;
 
-
         switch ($vType) {
             case KeyPool::TYPE_TASK:
                 $task = Task::where('uid', $uid)->firstOrFail();
@@ -114,9 +113,30 @@ class VerifyController extends Controller
      */
     private function checkKey(string $key, string $type)
     {
-        return KeyPool::where([
-            ['key', $key],
-            ['type', $type]
-        ])->exists();
+        $result = false;
+
+        switch ($type) {
+            case KeyPool::TYPE_TASK:
+                $tmp = explode('+', $key);
+
+                if($tmp[1] < strtotime('-60 seconds')){
+                    $result = false;
+                } else {
+                    $result = KeyPool::whereRaw(
+                        'md5(concat(`key`, ?)) = ?',
+                        ['+' . $tmp[1], $tmp[0]]
+                    )->exists();
+                }
+
+                break;
+            case KeyPool::TYPE_REWARD:
+                $result = KeyPool::where([
+                    ['key', $key],
+                    ['type', $type]
+                ])->exists();
+                break;
+        }
+
+        return $result;
     }
 }

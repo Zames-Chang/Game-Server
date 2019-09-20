@@ -1,6 +1,10 @@
 # Game-Server
 大地遊戲後端
 
+## Requirement
+* PHP >= 7.1.3
+    * GD PHP Extension
+
 ## 安裝
 
 + 安裝 PHP 套件
@@ -12,6 +16,18 @@ composer install
 ```
 cp .env.example .env
 ```
+
++ 設定任務驗證碼
+TASK_VKEY=
+
++ 設定管理密碼
+ADMIN_KEY=
+
++ 設定 QR Code 使用者帳號
+QRCODE_USER=
+
++ 設定 QR Code 使用者密碼
+QRCODE_PASS=
 
 + 修改資料庫相關參數
 ```
@@ -39,4 +55,3 @@ php artisan migrate --seed
 ```
 php -S localhost:8000 -t public
 ```
-
