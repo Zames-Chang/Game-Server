@@ -117,15 +117,14 @@ class VerifyController extends Controller
 
         switch ($type) {
             case KeyPool::TYPE_TASK:
-                $tmp = explode('+', $key);
-
-                if($tmp[1] < strtotime('-60 seconds')){
-                    $result = false;
-                } else {
-                    $result = KeyPool::whereRaw(
-                        'md5(concat(`key`, ?)) = ?',
-                        ['+' . $tmp[1], $tmp[0]]
-                    )->exists();
+                if (strpos($key, '+') !== false) {
+                    $tmp = explode('+', $key);
+                    if ($tmp[1] > strtotime('-60 seconds')) {
+                        $result = KeyPool::whereRaw(
+                            'md5(concat(`key`, ?)) = ?',
+                            ['+' . $tmp[1], $tmp[0]]
+                        )->exists();
+                    }
                 }
 
                 break;
