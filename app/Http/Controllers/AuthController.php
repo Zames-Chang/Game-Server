@@ -58,6 +58,35 @@ class AuthController extends Controller
     }
 
     /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function invite(Request $request)
+    {
+        $rules = [
+            'uid' => 'required',
+            'email' => 'required|string',
+        ];
+        $this->validate($request, $rules);
+
+        $user = User::firstOrNew(['uid' => $request->uid]);
+        $user->email = $request->email;
+        $user->password = Hash::make($request->email);
+        $user->save();
+
+        $credentials = [
+            'uid' => $user->uid,
+            'password' => $user->email,
+        ];
+
+        if (! $token = $this->guard()->attempt($credentials)) {
+            return $this->return404Response();
+        }
+
+        return $this->respondWithToken($token);
+    }
+
+    /**
      * @return \Illuminate\Http\JsonResponse
      */
     public function refreshToken()
