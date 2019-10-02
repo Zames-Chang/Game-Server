@@ -15,6 +15,8 @@ $router->get('/intro', 'InfoController@showGameInfo');
 $router->post('/register', 'AuthController@register');
 $router->post('/login', 'AuthController@login');
 
+$router->get('/getRewardTest', 'RewardController@getRewardTest');
+
 $router->group(['middleware' => 'basicAuth'], function ($router) {
     $router->get('/qrcode', 'QrCodeController@showImage');
 });

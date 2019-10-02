@@ -21,11 +21,14 @@ class Reward extends Model
         'description',
         'description_e',
         'image',
-        'redeemable',
+        'quantity',
+        'likelihood',
     ];
 
     protected $hidden = [
         'id',
+        'quantity',
+        'likelihood',
         'created_at',
         'updated_at',
     ];
