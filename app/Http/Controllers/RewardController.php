@@ -21,19 +21,29 @@ class RewardController extends Controller
         $user = $this->guard()->user();
         $achievement = $user->achievement;
         $wonReward = collect($achievement[User::WON_REWARD]);
+        if ($wonReward->count() > 0) {
+            return $this->returnSuccess('No More Reward.');
+        }
 
-        $reward = Reward::whereNotIn('id', [2000])
-            ->inRandomOrder()
-            ->first();
+        $reward = Reward::orderByRaw('-LOG(1.0 - RAND()) / likelihood')
+            ->where([
+                ['likelihood', '>', 0],
+                ['quantity', '>', 0],
+            ])->firstOrFail();
 
         if ($reward) {
-            $newReward = $wonReward->push([
-                'reward_id' => $reward->id,
-                'redeemed' => false,
-            ]);
-            $achievement[User::WON_REWARD] = $newReward;
-            $user->achievement = $achievement;
-            $user->save();
+            if ($reward->quantity > 0) {
+                $newReward = $wonReward->push([
+                    'reward_id' => $reward->id,
+                    'redeemed' => false,
+                ]);
+                $achievement[User::WON_REWARD] = $newReward;
+                $user->achievement = $achievement;
+                $user->save();
+
+                $reward->quantity -= 1;
+                $reward->save();
+            }
 
             return $this->returnSuccess('Success.', $reward);
         } else {
@@ -41,7 +51,23 @@ class RewardController extends Controller
         }
     }
 
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getRewardTest()
+    {
+        $reward = Reward::orderByRaw('-LOG(1.0 - RAND()) / likelihood')
+            ->where([
+                ['likelihood', '>', 0],
+                ['quantity', '>', 0],
+            ])->firstOrFail();
 
+        if ($reward) {
+            return $this->returnSuccess('Success.', $reward);
+        } else {
+            return $this->returnSuccess('No More Reward.');
+        }
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -58,6 +84,8 @@ class RewardController extends Controller
             'description_e',
             'image',
             'redeemable',
+            'quantity',
+            'likelihood',
         ]));
 
         return $this->returnSuccess('Store success.', $reward);
