@@ -23,7 +23,9 @@ class RewardsTableSeeder extends Seeder
                 'description' => $faker->realtext(20),
                 'description_e' => $en_faker->text,
                 'image' => $faker->imageUrl('640', '480', 'technics', true, 'Faker'),
-                'redeemable' => $faker->boolean,
+                'redeemable' => 1,
+                'quantity' => 10,
+                'likelihood' => 50,
             ];
 
             Reward::create($data);

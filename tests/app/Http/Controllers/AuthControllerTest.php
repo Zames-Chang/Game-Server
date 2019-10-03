@@ -91,4 +91,23 @@ class AuthControllerTest extends TestCase
             "message" => "Success.",
         ]);
     }
+
+    public function testInvite()
+    {
+        $faker = \Faker\Factory::create();
+
+        $response = $this->json('POST', '/register', [
+            "uid" => $faker->uuid,
+            "email" => $faker->email,
+        ]);
+
+        $response = $this->json('POST', '/invite', [
+            "uid" => $faker->uuid,
+            "email" => 'test@te.st',
+        ]);
+
+        $response->seeJson([
+            "token_type" => "bearer",
+        ]);
+    }
 }

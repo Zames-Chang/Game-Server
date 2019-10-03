@@ -14,6 +14,7 @@
 $router->get('/intro', 'InfoController@showGameInfo');
 $router->post('/register', 'AuthController@register');
 $router->post('/login', 'AuthController@login');
+$router->post('/invite', 'AuthController@invite');
 
 $router->get('/getRewardTest', 'RewardController@getRewardTest');
 
