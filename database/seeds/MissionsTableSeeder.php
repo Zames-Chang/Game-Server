@@ -22,7 +22,6 @@ class MissionsTableSeeder extends Seeder
                 'name_e' => sprintf("Mission %s", $item_count + 1),
                 'description' => $faker->realtext(20),
                 'description_e' => $en_faker->text,
-                'image' => $faker->imageUrl('640', '480', 'technics', true, 'Faker'),
                 'open' => 1,
             ];
 

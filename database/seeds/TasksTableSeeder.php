@@ -23,7 +23,6 @@ class TasksTableSeeder extends Seeder
                 'description' => $faker->realtext(20),
                 'description_e' => $en_faker->text,
                 'image' => $faker->imageUrl('640', '480', 'technics', true, 'Faker'),
-                'point' => 1,
             ];
 
             Task::create($data);
