@@ -26,7 +26,7 @@ class VerifyController extends Controller
             return $this->return400Response();
         }
 
-        if (! $this->checkKey($request->input('vKey'), $vType)) {
+        if (! $this->checkKey($request->input('uid'), $request->input('vKey'), $vType)) {
             return $this->return400Response();
         }
 
@@ -111,7 +111,7 @@ class VerifyController extends Controller
      * @param string $type
      * @return boolean
      */
-    private function checkKey(string $key, string $type)
+    private function checkKey(string $uid, string $key, string $type)
     {
         $result = false;
 
@@ -119,10 +119,12 @@ class VerifyController extends Controller
             case KeyPool::TYPE_TASK:
                 if (strpos($key, '+') !== false) {
                     $tmp = explode('+', $key);
-                    if ($tmp[1] > strtotime('-60 seconds')) {
+                    if ($tmp[1] !== strtotime('-60 seconds')) {
+                        $task = Task::where('uid', $uid)->firstOrFail();
+                        $vkey = $task->Keypool->key;
                         $result = KeyPool::whereRaw(
-                            'md5(concat(`key`, ?)) = ?',
-                            ['+' . $tmp[1], $tmp[0]]
+                            'md5( ? ) = ?',
+                            [$vkey . '+' . $tmp[1], $tmp[0]]
                         )->exists();
                     }
                 }

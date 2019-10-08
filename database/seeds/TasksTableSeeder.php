@@ -18,6 +18,7 @@ class TasksTableSeeder extends Seeder
 
         while ($item_count < 20) {
             $data = [
+                'vkey_id' => rand(1, 3),
                 'name' => $faker->text(20),
                 'name_e' => $en_faker->text(20),
                 'description' => $faker->realtext(20),
